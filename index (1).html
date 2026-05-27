@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EditFlow AI - Video Editing Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg-primary:#0a0a0f;--bg-secondary:#12121a;--bg-tertiary:#1a1a25;--bg-card:#16161f;
+  --bg-hover:#1e1e2e;--accent:#7c3aed;--accent-light:#a78bfa;--accent-dark:#5b21b6;
+  --text-primary:#f1f1f4;--text-secondary:#a0a0b0;--text-muted:#6b6b7b;
+  --border:#2a2a3a;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#3b82f6;
+  --gradient-1:linear-gradient(135deg,#7c3aed 0%,#a855f7 50%,#ec4899 100%);
+  --gradient-2:linear-gradient(135deg,#3b82f6 0%,#7c3aed 100%);
+  --shadow:0 4px 20px rgba(0,0,0,0.4);--shadow-lg:0 10px 40px rgba(0,0,0,0.5);
+}
+* { margin:0;padding:0;box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased; }
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg-primary); }
+::-webkit-scrollbar-thumb { background:var(--accent);border-radius:3px; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+@keyframes slideIn { from{opacity:0;transform:translateX(30px);} to{opacity:1;transform:translateX(0);} }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+@keyframes spin { to{transform:rotate(360deg);} }
+.fade-in { animation:fadeIn 0.5s ease forwards; }
+.slide-in { animation:slideIn 0.4s ease forwards; }
+
+.header { position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border); }
+.header-inner { max-width:1400px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between; }
+.logo { display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text-primary); }
+.logo-icon { width:38px;height:38px;border-radius:10px;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:18px; }
+.logo-text { font-size:20px;font-weight:800;letter-spacing:-0.5px; }
+.logo-text span { background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+.nav-desktop { display:flex;align-items:center;gap:6px; }
+.nav-link { padding:8px 14px;border-radius:8px;color:var(--text-secondary);text-decoration:none;font-size:14px;font-weight:500;transition:all 0.2s;cursor:pointer;border:none;background:none;display:flex;align-items:center;gap:6px; }
+.nav-link:hover,.nav-link.active { color:var(--text-primary);background:var(--bg-tertiary); }
+.nav-link i { font-size:13px; }
+.header-actions { display:flex;align-items:center;gap:10px; }
+
+.btn { padding:9px 18px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none; }
+.btn-primary { background:var(--gradient-1);color:white;box-shadow:0 4px 15px rgba(124,58,237,0.3); }
+.btn-primary:hover { transform:translateY(-2px);box-shadow:0 6px 25px rgba(124,58,237,0.4); }
+.btn-secondary { background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border); }
+.btn-secondary:hover { background:var(--bg-hover);border-color:var(--accent); }
+.btn-ghost { background:transparent;color:var(--text-secondary);padding:8px 12px; }
+.btn-ghost:hover { color:var(--text-primary);background:var(--bg-tertiary); }
+.btn-sm { padding:6px 12px;font-size:13px;border-radius:8px; }
+.btn-lg { padding:14px 28px;font-size:16px;border-radius:12px; }
+.btn-danger { background:var(--danger);color:white; }
+
+.search-btn { width:38px;height:38px;border-radius:10px;background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s; }
+.search-btn:hover { background:var(--bg-hover);color:var(--text-primary);border-color:var(--accent); }
+.user-avatar { width:36px;height:36px;border-radius:50%;background:var(--gradient-2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;border:2px solid var(--border);transition:all 0.2s; }
+.user-avatar:hover { border-color:var(--accent);transform:scale(1.05); }
+
+.mobile-nav { display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,0.98);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:6px 0 8px; }
+.mobile-nav-inner { display:flex;justify-content:space-around;align-items:center;max-width:500px;margin:0 auto; }
+.mobile-nav-item { display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 12px;border-radius:10px;color:var(--text-muted);text-decoration:none;font-size:11px;font-weight:500;border:none;background:none;cursor:pointer;transition:all 0.2s; }
+.mobile-nav-item i { font-size:20px; }
+.mobile-nav-item.active { color:var(--accent-light); }
+.mobile-nav-item:hover { color:var(--text-secondary); }
+
+.main-content { padding-top:64px;padding-bottom:80px;min-height:100vh; }
+
+.hero { position:relative;padding:80px 20px 60px;overflow:hidden;text-align:center; }
+.hero-bg { position:absolute;inset:0;z-index:0;opacity:0.15;background:radial-gradient(ellipse at 20% 50%,rgba(124,58,237,0.3) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(236,72,153,0.2) 0%,transparent 50%),radial-gradient(ellipse at 50% 100%,rgba(59,130,246,0.2) 0%,transparent 50%); }
+.hero-content { position:relative;z-index:1;max-width:800px;margin:0 auto; }
+.hero-badge { display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:var(--bg-tertiary);border:1px solid var(--border);font-size:13px;color:var(--accent-light);margin-bottom:24px; }
+.hero-badge .dot { width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2s infinite; }
+.hero h1 { font-size:clamp(32px,6vw,56px);font-weight:900;line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px; }
+.hero h1 .gradient { background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+.hero p { font-size:clamp(16px,2.5vw,20px);color:var(--text-secondary);max-width:600px;margin:0 auto 32px;line-height:1.7; }
+.hero-buttons { display:flex;gap:12px;justify-content:center;flex-wrap:wrap; }
+.hero-stats { display:flex;justify-content:center;gap:40px;margin-top:48px;flex-wrap:wrap; }
+.stat-item { text-align:center; }
+.stat-value { font-size:28px;font-weight:800;color:var(--text-primary); }
+.stat-label { font-size:13px;color:var(--text-muted);margin-top:4px; }
+
+.section { padding:40px 20px;max-width:1400px;margin:0 auto; }
+.section-header { display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
+.section-title { font-size:24px;font-weight:800; }
+.section-title span { color:var(--accent-light); }
+.section-desc { color:var(--text-secondary);font-size:14px;margin-top:4px; }
+
+.cards-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px; }
+.card { background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s ease;cursor:pointer; }
+.card:hover { transform:translateY(-4px);border-color:var(--accent);box-shadow:var(--shadow-lg); }
+.card-image { width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--bg-tertiary); }
+.card-body { padding:16px; }
+.card-tag { display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;margin-bottom:8px;margin-right:6px; }
+.tag-gaming { background:rgba(239,68,68,0.15);color:#f87171; }
+.tag-anime { background:rgba(168,85,247,0.15);color:#c084fc; }
+.tag-color { background:rgba(34,197,94,0.15);color:#4ade80; }
+.tag-sound { background:rgba(59,130,246,0.15);color:#60a5fa; }
+.tag-motion { background:rgba(245,158,11,0.15);color:#fbbf24; }
+.tag-export { background:rgba(107,114,128,0.15);color:#9ca3af; }
+.tag-beginner { background:rgba(34,197,94,0.15);color:#4ade80; }
+.tag-advanced { background:rgba(239,68,68,0.15);color:#f87171; }
+.tag-intermediate { background:rgba(245,158,11,0.15);color:#fbbf24; }
+.tag-preset { background:rgba(124,58,237,0.15);color:#a78bfa; }
+.tag-overlay { background:rgba(236,72,153,0.15);color:#f472b6; }
+.tag-lut { background:rgba(34,197,94,0.15);color:#4ade80; }
+.tag-font { background:rgba(59,130,246,0.15);color:#60a5fa; }
+.tag-sfx { background:rgba(245,158,11,0.15);color:#fbbf24; }
+.tag-project { background:rgba(107,114,128,0.15);color:#9ca3af; }
+.tag-transition { background:rgba(168,85,247,0.15);color:#c084fc; }
+
+.card-title { font-size:16px;font-weight:700;margin-bottom:6px;line-height:1.4; }
+.card-desc { font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:12px; }
+.card-meta { display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-muted); }
+.card-meta i { margin-right:4px; }
+
+.pills-row { display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:20px;scrollbar-width:none; }
+.pills-row::-webkit-scrollbar { display:none; }
+.pill { padding:8px 16px;border-radius:100px;background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-secondary);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;gap:6px; }
+.pill:hover { border-color:var(--accent);color:var(--text-primary); }
+.pill.active { background:var(--accent);color:white;border-color:var(--accent); }
+
+.ai-chat-container { max-width:900px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;overflow:hidden; }
+.ai-chat-header { padding:16px 20px;background:var(--bg-tertiary);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px; }
+.ai-avatar { width:40px;height:40px;border-radius:12px;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:18px; }
+.ai-status { font-size:13px;color:var(--text-muted); }
+.ai-status .online { color:var(--success); }
+.ai-modes { display:flex;gap:8px;padding:12px 20px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none; }
+.ai-modes::-webkit-scrollbar { display:none; }
+.ai-mode { padding:6px 14px;border-radius:8px;background:var(--bg-primary);border:1px solid var(--border);color:var(--text-secondary);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
+.ai-mode:hover { border-color:var(--accent); }
+.ai-mode.active { background:var(--accent);color:white;border-color:var(--accent); }
+.chat-messages { height:400px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px; }
+.message { max-width:80%;padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.6;animation:fadeIn 0.3s ease; }
+.message-bot { background:var(--bg-tertiary);align-self:flex-start;border-bottom-left-radius:4px; }
+.message-user { background:var(--accent);align-self:flex-end;border-bottom-right-radius:4px; }
+.message-time { font-size:11px;color:var(--text-muted);margin-top:6px; }
+.chat-input-area { padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;background:var(--bg-tertiary); }
+.chat-input { flex:1;padding:12px 16px;border-radius:12px;background:var(--bg-primary);border:1px solid var(--border);color:var(--text-primary);font-size:14px;outline:none;transition:all 0.2s; }
+.chat-input:focus { border-color:var(--accent); }
+.chat-input::placeholder { color:var(--text-muted); }
+
+.resource-card { display:flex;gap:16px;padding:16px; }
+.resource-icon { width:56px;height:56px;border-radius:14px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0; }
+.resource-info { flex:1; }
+.resource-title { font-size:15px;font-weight:700;margin-bottom:4px; }
+.resource-desc { font-size:13px;color:var(--text-secondary);margin-bottom:10px; }
+.resource-actions { display:flex;gap:8px; }
+
+.issue-card { padding:20px;cursor:pointer;display:flex;align-items:flex-start;gap:16px; }
+.issue-icon { width:48px;height:48px;border-radius:12px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
+.issue-content { flex:1; }
+.issue-title { font-size:16px;font-weight:700;margin-bottom:4px; }
+.issue-desc { font-size:13px;color:var(--text-secondary); }
+.issue-arrow { color:var(--text-muted);transition:all 0.2s; }
+.issue-card:hover .issue-arrow { color:var(--accent);transform:translateX(4px); }
+
+.modal-overlay { position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:all 0.3s ease; }
+.modal-overlay.active { opacity:1;visibility:visible; }
+.modal { background:var(--bg-card);border:1px solid var(--border);border-radius:20px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;transform:scale(0.9);transition:all 0.3s ease; }
+.modal-overlay.active .modal { transform:scale(1); }
+.modal-header { padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center; }
+.modal-title { font-size:20px;font-weight:800; }
+.modal-close { width:36px;height:36px;border-radius:10px;background:var(--bg-tertiary);border:none;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.2s; }
+.modal-close:hover { background:var(--danger);color:white; }
+.modal-body { padding:24px; }
+.modal-body h3 { font-size:16px;font-weight:700;margin:20px 0 10px;color:var(--accent-light); }
+.modal-body h3:first-child { margin-top:0; }
+.modal-body p,.modal-body li { font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:8px; }
+.modal-body ul { padding-left:20px; }
+.modal-body code { background:var(--bg-tertiary);padding:2px 8px;border-radius:4px;font-size:13px;color:var(--accent-light); }
+.modal-body .tip-box { background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:14px;margin:12px 0; }
+.modal-body .warning-box { background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:14px;margin:12px 0; }
+
+.auth-tabs { display:flex;gap:4px;padding:4px;background:var(--bg-tertiary);border-radius:12px;margin-bottom:24px; }
+.auth-tab { flex:1;padding:10px;border-radius:10px;border:none;background:none;color:var(--text-secondary);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s; }
+.auth-tab.active { background:var(--accent);color:white; }
+.form-group { margin-bottom:16px; }
+.form-label { display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-secondary); }
+.form-input { width:100%;padding:12px 16px;border-radius:12px;background:var(--bg-primary);border:1px solid var(--border);color:var(--text-primary);font-size:14px;outline:none;transition:all 0.2s; }
+.form-input:focus { border-color:var(--accent); }
+
+.search-modal .modal { max-width:600px; }
+.search-input-wrap { display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border); }
+.search-input-wrap i { color:var(--text-muted);font-size:18px; }
+.search-input-wrap input { flex:1;background:none;border:none;color:var(--text-primary);font-size:16px;outline:none; }
+.search-input-wrap input::placeholder { color:var(--text-muted); }
+.search-shortcut { padding:4px 10px;border-radius:6px;background:var(--bg-tertiary);font-size:12px;color:var(--text-muted); }
+.search-results { padding:12px; }
+.search-result-item { display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:12px;cursor:pointer;transition:all 0.2s; }
+.search-result-item:hover { background:var(--bg-tertiary); }
+.search-result-icon { width:40px;height:40px;border-radius:10px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
+.search-result-info { flex:1; }
+.search-result-title { font-size:14px;font-weight:600; }
+.search-result-desc { font-size:12px;color:var(--text-muted); }
+
+.admin-stats { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px; }
+.admin-stat-card { background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px; }
+.admin-stat-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px; }
+.admin-stat-value { font-size:28px;font-weight:800; }
+.admin-stat-label { font-size:13px;color:var(--text-muted);margin-top:4px; }
+.admin-stat-change { font-size:12px;font-weight:600;margin-top:8px; }
+.stat-up { color:var(--success); }
+.stat-down { color:var(--danger); }
+.admin-table-wrap { background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden; }
+.admin-table-header { padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center; }
+.admin-table { width:100%;border-collapse:collapse; }
+.admin-table th,.admin-table td { padding:14px 20px;text-align:left;font-size:14px; }
+.admin-table th { background:var(--bg-tertiary);font-weight:600;color:var(--text-secondary);font-size:12px;text-transform:uppercase;letter-spacing:0.5px; }
+.admin-table td { border-bottom:1px solid var(--border);color:var(--text-secondary); }
+.admin-table tr:last-child td { border-bottom:none; }
+.admin-table tr:hover td { background:var(--bg-hover); }
+.status-badge { display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:600; }
+.status-active { background:rgba(34,197,94,0.15);color:#4ade80; }
+.status-pending { background:rgba(245,158,11,0.15);color:#fbbf24; }
+.status-banned { background:rgba(239,68,68,0.15);color:#f87171; }
+
+.toast-container { position:fixed;top:80px;right:20px;z-index:3000;display:flex;flex-direction:column;gap:10px; }
+.toast { padding:14px 20px;border-radius:12px;background:var(--bg-card);border:1px solid var(--border);box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:12px;font-size:14px;animation:slideIn 0.3s ease;max-width:400px; }
+.toast-success { border-color:var(--success); }
+.toast-error { border-color:var(--danger); }
+.toast-info { border-color:var(--info); }
+
+.page { display:none;animation:fadeIn 0.4s ease; }
+.page.active { display:block; }
+
+.empty-state { text-align:center;padding:60px 20px; }
+.empty-state-icon { width:80px;height:80px;border-radius:24px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px; }
+.empty-state h3 { font-size:20px;font-weight:700;margin-bottom:8px; }
+.empty-state p { color:var(--text-secondary);font-size:14px; }
+
+.ad-banner { background:var(--bg-card);border:1px dashed var(--border);border-radius:12px;padding:20px;text-align:center;color:var(--text-muted);font-size:13px; }
+
+.footer { background:var(--bg-secondary);border-top:1px solid var(--border);padding:40px 20px 100px; }
+.footer-inner { max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px; }
+.footer-col h4 { font-size:14px;font-weight:700;margin-bottom:16px; }
+.footer-col a { display:block;color:var(--text-muted);text-decoration:none;font-size:13px;padding:6px 0;transition:all 0.2s; }
+.footer-col a:hover { color:var(--accent-light); }
+.footer-bottom { max-width:1400px;margin:32px auto 0;padding-top:24px;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:13px; }
+
+@media (max-width:768px) {
+  .nav-desktop { display:none; }
+  .mobile-nav { display:block; }
+  .header-actions .btn-secondary { display:none; }
+  .hero { padding:60px 16px 40px; }
+  .hero-stats { gap:24px; }
+  .section { padding:24px 16px; }
+  .cards-grid { grid-template-columns:1fr; }
+  .admin-table-wrap { overflow-x:auto; }
+  .admin-stats { grid-template-columns:repeat(2,1fr); }
+  .chat-messages { height:300px; }
+  .modal { max-height:85vh; }
+}
+@media (min-width:769px) { .mobile-nav { display:none !important; } }
+
+.text-gradient { background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+.text-center { text-align:center; }
+.mb-4 { margin-bottom:16px; }
+.mt-4 { margin-top:16px; }
+.flex { display:flex; }
+.items-center { align-items:center; }
+.gap-2 { gap:8px; }
+.gap-3 { gap:12px; }
+.w-full { width:100%; }
+.hidden { display:none !important; }
+</style>
+</head>
+<body>
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Header -->
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="#" class="logo" onclick="goHome();return false;">
+      <div class="logo-icon"><i class="fas fa-film"></i></div>
+      <div class="logo-text">Edit<span>Flow</span></div>
+    </a>
+    <nav class="nav-desktop">
+      <button class="nav-link active" data-page="home" onclick="showPage('home')">
+        <i class="fas fa-home"></i> Home
+      </button>
+      <button class="nav-link" data-page="tutorials" onclick="showPage('tutorials')">
+        <i class="fas fa-play-circle"></i> Tutorials
+      </button>
+      <button class="nav-link" data-page="resources" onclick="showPage('resources')">
+        <i class="fas fa-download"></i> Resources
+      </button>
+      <button class="nav-link" data-page="ai-assistant" onclick="showPage('ai-assistant')">
+        <i class="fas fa-robot"></i> AI
+      </button>
+      <button class="nav-link" data-page="troubleshoot" onclick="showPage('troubleshoot')">
+        <i class="fas fa-wrench"></i> Fix Issues
+      </button>
+    </nav>
+    <div class="header-actions">
+      <button class="search-btn" onclick="openSearch()" title="Search (Ctrl+K)">
+        <i class="fas fa-search"></i>
+      </button>
+      <button class="btn btn-secondary btn-sm" id="loginBtn" onclick="openAuth()">
+        <i class="fas fa-user"></i> Sign In
+      </button>
+      <div class="user-avatar hidden" id="userAvatar" onclick="toggleUserMenu()">A</div>
+    </div>
+  </div>
+</header>
+
+<!-- User Dropdown -->
+<div class="modal-overlay" id="userMenuOverlay" onclick="if(event.target===this)closeUserMenu()">
+  <div class="modal" style="max-width:280px;margin-right:20px;margin-top:70px;align-self:flex-start;margin-left:auto;">
+    <div class="modal-body" style="padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div class="user-avatar" style="width:44px;height:44px;font-size:16px;">A</div>
+        <div>
+          <div style="font-weight:700;">Ahmed Editor</div>
+          <div style="font-size:12px;color:var(--text-muted);">Pro Member</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary w-full" style="margin-bottom:8px;justify-content:flex-start;" onclick="showPage('profile');closeUserMenu();">
+        <i class="fas fa-user"></i> Profile
+      </button>
+      <button class="btn btn-secondary w-full" style="margin-bottom:8px;justify-content:flex-start;" onclick="showPage('saved');closeUserMenu();">
+        <i class="fas fa-bookmark"></i> Saved Resources
+      </button>
+      <button class="btn btn-secondary w-full" style="margin-bottom:8px;justify-content:flex-start;" onclick="showPage('admin');closeUserMenu();">
+        <i class="fas fa-cog"></i> Admin Dashboard
+      </button>
+      <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">
+      <button class="btn btn-secondary w-full" style="justify-content:flex-start;color:var(--danger);" onclick="logout();closeUserMenu();">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<main class="main-content">
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span>AI-Powered Video Editing Hub</div>
+      <h1>Master Video Editing with <span class="gradient">AI Assistance</span></h1>
+      <p>Tutorials, resources, AI mentor, and a thriving community for video editors, gamers, and content creators.</p>
+      <div class="hero-buttons">
+        <button class="btn btn-primary btn-lg" onclick="showPage('tutorials')"><i class="fas fa-play"></i> Explore Tutorials</button>
+        <button class="btn btn-secondary btn-lg" onclick="showPage('ai-assistant')"><i class="fas fa-robot"></i> Ask AI Mentor</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><div class="stat-value">500+</div><div class="stat-label">Tutorials</div></div>
+        <div class="stat-item"><div class="stat-value">10K+</div><div class="stat-label">Resources</div></div>
+        <div class="stat-item"><div class="stat-value">50K+</div><div class="stat-label">Editors</div></div>
+        <div class="stat-item"><div class="stat-value">24/7</div><div class="stat-label">AI Support</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Featured <span>Tutorials</span></h2>
+        <p class="section-desc">Hand-picked guides for every skill level</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="showPage('tutorials')">View All <i class="fas fa-arrow-right"></i></button>
+    </div>
+    <div class="cards-grid" id="featuredTutorials"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Popular <span>Resources</span></h2>
+        <p class="section-desc">Free downloads for your next project</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="showPage('resources')">View All <i class="fas fa-arrow-right"></i></button>
+    </div>
+    <div class="cards-grid" id="featuredResources"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Quick <span>Fixes</span></h2>
+        <p class="section-desc">Solve common editing problems instantly</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="showPage('troubleshoot')">View All <i class="fas fa-arrow-right"></i></button>
+    </div>
+    <div class="cards-grid" id="featuredIssues"></div>
+  </div>
+
+  <div class="section">
+    <div class="ad-banner">
+      <i class="fas fa-ad" style="font-size:24px;margin-bottom:8px;display:block;"></i>
+      Ad Space - Google AdSense Ready<br>728x90 Banner Placement
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#" onclick="showPage('tutorials');return false;">Tutorials</a>
+        <a href="#" onclick="showPage('resources');return false;">Resources</a>
+        <a href="#" onclick="showPage('ai-assistant');return false;">AI Assistant</a>
+        <a href="#" onclick="showPage('troubleshoot');return false;">Troubleshooting</a>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <a href="#" onclick="filterTutorials('gaming');return false;">Gaming Edits</a>
+        <a href="#" onclick="filterTutorials('anime');return false;">Anime Edits</a>
+        <a href="#" onclick="filterTutorials('color');return false;">Color Grading</a>
+        <a href="#" onclick="filterTutorials('sound');return false;">Sound Design</a>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <a href="#" onclick="showPage('community');return false;">Community Feed</a>
+        <a href="#" onclick="showPage('creators');return false;">Creator Spotlight</a>
+        <a href="#" onclick="showPage('forum');return false;">Forum</a>
+        <a href="#" onclick="showPage('contests');return false;">Contests</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#" onclick="showPage('help');return false;">Help Center</a>
+        <a href="#" onclick="showPage('contact');return false;">Contact Us</a>
+        <a href="#" onclick="showPage('privacy');return false;">Privacy Policy</a>
+        <a href="#" onclick="showPage('terms');return false;">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>EditFlow AI - Video Editing Hub. Built for creators, by creators.</p>
+    </div>
+  </footer>
+</div>
+
+<!-- TUTORIALS PAGE -->
+<div class="page" id="page-tutorials">
+  <div class="section" style="padding-top:24px;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Video <span>Tutorials</span></h2>
+        <p class="section-desc">Learn from the best creators in the industry</p>
+      </div>
+    </div>
+    <div class="pills-row" id="tutorialFilters">
+      <button class="pill active" onclick="filterTutorials('all')">All</button>
+      <button class="pill" onclick="filterTutorials('beginner')">Beginner</button>
+      <button class="pill" onclick="filterTutorials('gaming')">Gaming</button>
+      <button class="pill" onclick="filterTutorials('anime')">Anime</button>
+      <button class="pill" onclick="filterTutorials('shorts')">Shorts/Reels</button>
+      <button class="pill" onclick="filterTutorials('color')">Color Grading</button>
+      <button class="pill" onclick="filterTutorials('sound')">Sound Design</button>
+      <button class="pill" onclick="filterTutorials('motion')">Motion Graphics</button>
+      <button class="pill" onclick="filterTutorials('export')">Export Settings</button>
+    </div>
+    <div class="cards-grid" id="tutorialsGrid"></div>
+  </div>
+</div>
+
+<!-- RESOURCES PAGE -->
+<div class="page" id="page-resources">
+  <div class="section" style="padding-top:24px;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Free <span>Resources</span></h2>
+        <p class="section-desc">Download presets, overlays, LUTs, and more</p>
+      </div>
+    </div>
+    <div class="pills-row" id="resourceFilters">
+      <button class="pill active" onclick="filterResources('all')">All</button>
+      <button class="pill" onclick="filterResources('presets')">Presets</button>
+      <button class="pill" onclick="filterResources('overlays')">Overlays</button>
+      <button class="pill" onclick="filterResources('transitions')">Transitions</button>
+      <button class="pill" onclick="filterResources('luts')">LUTs</button>
+      <button class="pill" onclick="filterResources('fonts')">Fonts</button>
+      <button class="pill" onclick="filterResources('sfx')">SFX</button>
+      <button class="pill" onclick="filterResources('projects')">Projects</button>
+    </div>
+    <div class="cards-grid" id="resourcesGrid"></div>
+  </div>
+</div>
+
+<!-- AI ASSISTANT PAGE -->
+<div class="page" id="page-ai-assistant">
+  <div class="section" style="padding-top:24px;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">AI <span>Mentor</span></h2>
+        <p class="section-desc">Your personal video editing assistant</p>
+      </div>
+    </div>
+    <div class="ai-chat-container">
+      <div class="ai-chat-header">
+        <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+        <div>
+          <div style="font-weight:700;">EditFlow AI</div>
+          <div class="ai-status"><span class="online">&#9679;</span> Online - Ready to help</div>
+        </div>
+      </div>
+      <div class="ai-modes">
+        <button class="ai-mode active" onclick="setAIMode('mentor')">Mentor</button>
+        <button class="ai-mode" onclick="setAIMode('ideas')">Idea Generator</button>
+        <button class="ai-mode" onclick="setAIMode('optimizer')">PC Optimizer</button>
+        <button class="ai-mode" onclick="setAIMode('color')">Color Advisor</button>
+        <button class="ai-mode" onclick="setAIMode('export')">Export Guide</button>
+        <button class="ai-mode" onclick="setAIMode('script')">Script Writer</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="message message-bot">
+          <div>Hello! I am your AI Video Editing Mentor. How can I help you today?</div>
+          <div class="message-time">Just now</div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything about video editing..." onkeypress="if(event.key==='Enter')sendMessage()">
+        <button class="btn btn-primary" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+    <div style="margin-top:32px;">
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">Quick Questions</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <button class="pill" onclick="quickAsk('How do I make smooth gaming transitions?')">Smooth gaming transitions?</button>
+        <button class="pill" onclick="quickAsk('Best export settings for YouTube 4K?')">YouTube 4K export?</button>
+        <button class="pill" onclick="quickAsk('How to fix lag in Premiere Pro?')">Fix Premiere lag?</button>
+        <button class="pill" onclick="quickAsk('Color grading tips for cinematic look?')">Cinematic color grading?</button>
+        <button class="pill" onclick="quickAsk('Best free editing software for beginners?')">Free editing software?</button>
+        <button class="pill" onclick="quickAsk('How to make viral TikTok edits?')">Viral TikTok edits?</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TROUBLESHOOT PAGE -->
+<div class="page" id="page-troubleshoot">
+  <div class="section" style="padding-top:24px;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Fix <span>Issues</span></h2>
+        <p class="section-desc">Solutions for lag, crashes, rendering, and more</p>
+      </div>
+    </div>
+    <div class="pills-row">
+      <button class="pill active" onclick="filterIssues('all')">All Issues</button>
+      <button class="pill" onclick="filterIssues('lag')">Lag</button>
+      <button class="pill" onclick="filterIssues('crash')">Crashes</button>
+      <button class="pill" onclick="filterIssues('render')">Rendering</button>
+      <button class="pill" onclick="filterIssues('fps')">FPS Drops</button>
+      <button class="pill" onclick="filterIssues('audio')">Audio</button>
+    </div>
+    <div class="cards-grid" id="issuesGrid"></div>
+  </div>
+</div>
+
+<!-- COMMUNITY PAGE -->
+<div class="page" id="page-community">
+  <div class="section" style="padding-top:24px;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Community <span>Feed</span></h2>
+        <p class="section-desc">Share your work and get feedback</p>
+      </div>
+    </div>
+    <div class="cards-grid" id="communityGrid"></div>
+  </div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div class="page" id="page-profile">
+  <div class="section" style="padding-top:24px;">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:32px;text-align:center;margin-bottom:24px;">
+      <div class="user-avatar" style="width:80px;height:80px;font-size:28px;margin:0 auto 16px;">A</div>
+      <h2 style="font-size:24px;font-weight:800;">Ahmed Editor</h2>
+      <p style="color:var(--text-muted);margin-top:4px;">@ahmed_editor &#8226; Pro Member</p>
+      <div style="display:flex;justify-content:center;gap:24px;margin-top:20px;">
+        <div><div style="font-size:20px;font-weight:800;">12</div><div style="font-size:12px;color:var(--text-muted);">Posts</div></div>
+        <div><div style="font-size:20px;font-weight:800;">48</div><div style="font-size:12px;color:var(--text-muted);">Saved</div></div>
+        <div><div style="font-size:20px;font-weight:800;">1.2K</div><div style="font-size:12px;color:var(--text-muted);">Followers</div></div>
+      </div>
+    </div>
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">Recent Activity</h3>
+    <div class="cards-grid" id="profileActivity"></div>
+  </div>
+</div>
+
+<!-- SAVED PAGE -->
+<div class="page" id="page-saved">
+  <div class="section" style="padding-top:24px;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Saved <span>Resources</span></h2>
+        <p class="section-desc">Your bookmarked tutorials and downloads</p>
+      </div>
+    </div>
+    <div id="savedContent">
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-bookmark"></i></div>
+        <h3>No saved items yet</h3>
+        <p>Browse tutorials and resources, then click the bookmark icon to save them here.</p>
+        <button class="btn btn-primary mt-4" onclick="showPage('tutorials')">Browse Tutorials</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="page" id="page-admin">
+  <div class="section" style="padding-top:24px;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Admin <span>Dashboard</span></h2>
+        <p class="section-desc">Manage your platform</p>
+      </div>
+    </div>
+    <div class="admin-stats">
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:rgba(124,58,237,0.15);color:#a78bfa;"><i class="fas fa-users"></i></div>
+        <div class="admin-stat-value">12,450</div>
+        <div class="admin-stat-label">Total Users</div>
+        <div class="admin-stat-change stat-up"><i class="fas fa-arrow-up"></i> +12% this week</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:rgba(34,197,94,0.15);color:#4ade80;"><i class="fas fa-eye"></i></div>
+        <div class="admin-stat-value">89.2K</div>
+        <div class="admin-stat-label">Page Views</div>
+        <div class="admin-stat-change stat-up"><i class="fas fa-arrow-up"></i> +24% this week</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:rgba(59,130,246,0.15);color:#60a5fa;"><i class="fas fa-download"></i></div>
+        <div class="admin-stat-value">34.1K</div>
+        <div class="admin-stat-label">Downloads</div>
+        <div class="admin-stat-change stat-up"><i class="fas fa-arrow-up"></i> +8% this week</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24;"><i class="fas fa-dollar-sign"></i></div>
+        <div class="admin-stat-value">$1,240</div>
+        <div class="admin-stat-label">Revenue</div>
+        <div class="admin-stat-change stat-up"><i class="fas fa-arrow-up"></i> +15% this week</div>
+      </div>
+    </div>
+    <div class="admin-table-wrap" style="margin-bottom:24px;">
+      <div class="admin-table-header">
+        <h3 style="font-size:16px;font-weight:700;">Recent Users</h3>
+        <button class="btn btn-secondary btn-sm">View All</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td style="display:flex;align-items:center;gap:10px;"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;">A</div> Ahmed Editor</td><td>ahmed@example.com</td><td>Admin</td><td><span class="status-badge status-active">Active</span></td><td>Jan 15, 2026</td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+            <tr><td style="display:flex;align-items:center;gap:10px;"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;background:var(--gradient-2);">S</div> Sarah Cuts</td><td>sarah@example.com</td><td>Creator</td><td><span class="status-badge status-active">Active</span></td><td>Feb 3, 2026</td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+            <tr><td style="display:flex;align-items:center;gap:10px;"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#ef4444,#f97316);">M</div> Mike Edits</td><td>mike@example.com</td><td>User</td><td><span class="status-badge status-pending">Pending</span></td><td>Mar 10, 2026</td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <h3 style="font-size:16px;font-weight:700;">Content Moderation</h3>
+        <button class="btn btn-secondary btn-sm">Manage</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Content</th><th>Type</th><th>Author</th><th>Reports</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td>Gaming Transition Pack</td><td>Resource</td><td>Ahmed Editor</td><td>0</td><td><span class="status-badge status-active">Approved</span></td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+            <tr><td>Anime Edit Tutorial</td><td>Tutorial</td><td>Sarah Cuts</td><td>1</td><td><span class="status-badge status-pending">Review</span></td><td><button class="btn btn-ghost btn-sm"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATORS PAGE -->
+<div class="page" id="page-creators">
+  <div class="section" style="padding-top:24px;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Creator <span>Spotlight</span></h2>
+        <p class="section-desc">Featured editors and content creators</p>
+      </div>
+    </div>
+    <div class="cards-grid" id="creatorsGrid"></div>
+  </div>
+</div>
+
+<!-- HELP PAGE -->
+<div class="page" id="page-help">
+  <div class="section" style="padding-top:24px;max-width:800px;">
+    <h2 class="section-title" style="margin-bottom:24px;">Help <span>Center</span></h2>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;"><i class="fas fa-question-circle" style="color:var(--accent-light);margin-right:8px;"></i>How do I download resources?</h3>
+        <p style="color:var(--text-secondary);font-size:14px;">Navigate to the Resources page, find what you need, and click the Download button. Some downloads may show a short ad before starting.</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;"><i class="fas fa-robot" style="color:var(--accent-light);margin-right:8px;"></i>How does the AI Mentor work?</h3>
+        <p style="color:var(--text-secondary);font-size:14px;">The AI Mentor uses advanced language models to answer your editing questions. Select a mode and start chatting!</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;"><i class="fas fa-upload" style="color:var(--accent-light);margin-right:8px;"></i>Can I upload my own resources?</h3>
+        <p style="color:var(--text-secondary);font-size:14px;">Yes! Create an account and go to your profile to upload presets, LUTs, overlays, and project files.</p>
+      </div>
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;"><i class="fas fa-mobile-alt" style="color:var(--accent-light);margin-right:8px;"></i>Is the site mobile-friendly?</h3>
+        <p style="color:var(--text-secondary);font-size:14px;">Absolutely! EditFlow is fully responsive and optimized for mobile devices.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="section" style="padding-top:24px;max-width:600px;">
+    <h2 class="section-title" style="margin-bottom:24px;">Contact <span>Us</span></h2>
+    <div class="card" style="padding:24px;">
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input type="text" class="form-input" placeholder="Enter your name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input type="text" class="form-input" placeholder="What is this about?">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-input" rows="5" placeholder="Tell us more..."></textarea>
+      </div>
+      <button class="btn btn-primary w-full" onclick="showToast('Message sent! We will reply soon.','success')">
+        <i class="fas fa-paper-plane"></i> Send Message
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY PAGE -->
+<div class="page" id="page-privacy">
+  <div class="section" style="padding-top:24px;max-width:800px;">
+    <h2 class="section-title" style="margin-bottom:24px;">Privacy <span>Policy</span></h2>
+    <div class="card" style="padding:24px;">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-light);">1. Information We Collect</h3>
+      <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:16px;">We collect information you provide directly to us, such as when you create an account, upload content, or contact us.</p>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-light);">2. How We Use Your Information</h3>
+      <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:16px;">We use the information we collect to provide, maintain, and improve our services, to communicate with you, and to personalize your experience.</p>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-light);">3. Data Security</h3>
+      <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;">We implement appropriate security measures to protect your personal information.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TERMS PAGE -->
+<div class="page" id="page-terms">
+  <div class="section" style="padding-top:24px;max-width:800px;">
+    <h2 class="section-title" style="margin-bottom:24px;">Terms of <span>Service</span></h2>
+    <div class="card" style="padding:24px;">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-light);">1. Acceptance of Terms</h3>
+      <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:16px;">By accessing or using EditFlow, you agree to be bound by these Terms of Service.</p>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-light);">2. User Content</h3>
+      <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:16px;">You retain ownership of any content you upload. By uploading, you grant us a license to use, display, and distribute your content.</p>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--accent-light);">3. Prohibited Activities</h3>
+      <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;">You may not use our platform for illegal activities, spam, harassment, or to distribute malware.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- Mobile Bottom Nav -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-item active" onclick="showPage('home')"><i class="fas fa-home"></i> Home</button>
+    <button class="mobile-nav-item" onclick="showPage('tutorials')"><i class="fas fa-play-circle"></i> Learn</button>
+    <button class="mobile-nav-item" onclick="showPage('ai-assistant')"><i class="fas fa-robot"></i> AI</button>
+    <button class="mobile-nav-item" onclick="showPage('resources')"><i class="fas fa-download"></i> Downloads</button>
+    <button class="mobile-nav-item" onclick="showPage('community')"><i class="fas fa-users"></i> Community</button>
+  </div>
+</nav>
+
+<!-- Search Modal -->
+<div class="modal-overlay search-modal" id="searchModal" onclick="if(event.target===this)closeSearch()">
+  <div class="modal">
+    <div class="search-input-wrap">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search tutorials, resources, issues..." oninput="performSearch(this.value)" onkeypress="if(event.key==='Enter')closeSearch()">
+      <span class="search-shortcut">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal" onclick="if(event.target===this)closeAuth()">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <div class="modal-title" id="authTitle">Welcome Back</div>
+      <button class="modal-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" onclick="switchAuthTab('register')">Sign Up</button>
+      </div>
+      <div id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="loginEmail" placeholder="your@email.com" value="demo@editflow.ai">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="loginPassword" placeholder="Enter password" value="demo123">
+        </div>
+        <button class="btn btn-primary w-full" onclick="doLogin()">
+          <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+        <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-muted);">
+          Demo: <code>demo@editflow.ai</code> / <code>demo123</code>
+        </p>
+      </div>
+      <div id="registerForm" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" placeholder="Create password">
+        </div>
+        <button class="btn btn-primary w-full" onclick="doRegister()">
+          <i class="fas fa-user-plus"></i> Create Account
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Issue Detail Modal -->
+<div class="modal-overlay" id="issueModal" onclick="if(event.target===this)closeIssueModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="issueModalTitle">Issue Title</div>
+      <button class="modal-close" onclick="closeIssueModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="issueModalBody"></div>
+  </div>
+</div>
+
+<!-- Download Modal -->
+<div class="modal-overlay" id="downloadModal" onclick="if(event.target===this)closeDownloadModal()">
+  <div class="modal" style="max-width:400px;text-align:center;">
+    <div class="modal-body">
+      <div style="width:60px;height:60px;border-radius:16px;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;">
+        <i class="fas fa-download"></i>
+      </div>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;">Preparing Download</h3>
+      <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;">Your download will start in a moment...</p>
+      <div class="ad-banner" style="margin-bottom:20px;">
+        <i class="fas fa-ad" style="font-size:20px;margin-bottom:6px;display:block;"></i>
+        Rewarded Ad Placeholder<br>Watch to unlock download
+      </div>
+      <button class="btn btn-primary w-full" onclick="confirmDownload()">
+        <i class="fas fa-download"></i> Download Now
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+// ===================== DATA =====================
+const tutorialsData = [
+  { id:1, title:"Gaming Montage Transitions Masterclass", desc:"Learn 10+ smooth transitions used by pro gaming editors. Includes velocity, zoom, and shake effects.", category:"gaming", level:"advanced", duration:"24 min", views:"125K", image:"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:2, title:"Anime Edit Tutorial - After Effects", desc:"Complete guide to creating stunning anime edits with masking, glow effects, and sync techniques.", category:"anime", level:"intermediate", duration:"18 min", views:"89K", image:"https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:3, title:"Color Grading for Cinematic Look", desc:"Master color grading using Lumetri Color. Learn about LUTs, curves, and color wheels for film look.", category:"color", level:"beginner", duration:"15 min", views:"210K", image:"https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:4, title:"Sound Design for Gaming Videos", desc:"Add impact to your edits with proper sound design. Covers SFX layering, audio sync, and mixing.", category:"sound", level:"intermediate", duration:"20 min", views:"67K", image:"https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:5, title:"Motion Graphics & Titles", desc:"Create professional titles and lower thirds. Text animations, kinetic typography, and more.", category:"motion", level:"intermediate", duration:"22 min", views:"94K", image:"https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:6, title:"YouTube Export Settings Guide", desc:"Best export settings for YouTube, TikTok, and Instagram. Bitrate, codec, and resolution explained.", category:"export", level:"beginner", duration:"12 min", views:"156K", image:"https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:7, title:"Viral TikTok/Reels Editing", desc:"Learn the editing techniques behind viral short-form content. Fast cuts, trending sounds, hooks.", category:"shorts", level:"beginner", duration:"14 min", views:"320K", image:"https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:8, title:"Advanced Keyframing Techniques", desc:"Master keyframes for smooth animations. Graph editor, easing, and advanced motion paths.", category:"motion", level:"advanced", duration:"28 min", views:"45K", image:"https://images.unsplash.com/photo-1535016120720-40c646be5580?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:9, title:"Getting Started with DaVinci Resolve", desc:"Complete beginner guide to DaVinci Resolve. Interface, timeline, cuts, and basic color grading.", category:"beginner", level:"beginner", duration:"30 min", views:"180K", image:"https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:10, title:"Anime Shake & Flash Effects", desc:"Create popular anime shake, flash, and RGB split effects used in viral anime edits.", category:"anime", level:"intermediate", duration:"16 min", views:"112K", image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:11, title:"Gaming Intro Templates", desc:"Build professional gaming intros from scratch. Logo reveals, particle effects, and 3D text.", category:"gaming", level:"advanced", duration:"35 min", views:"78K", image:"https://images.unsplash.com/photo-1542751110-97427bbecf20?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" },
+  { id:12, title:"Audio Sync for Music Videos", desc:"Perfectly sync your cuts to the beat. Beat detection, markers, and rhythmic editing techniques.", category:"sound", level:"intermediate", duration:"19 min", views:"56K", image:"https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&h=340&fit=crop", youtubeId:"dQw4w9WgXcQ" }
+];
+
+const resourcesData = [
+  { id:1, title:"Cinematic LUT Pack (50+)", desc:"Professional color grading LUTs for Premiere, DaVinci, and Final Cut. Cinematic, vintage, and moody looks.", category:"luts", size:"120 MB", downloads:"8.5K", icon:"fa-palette", color:"#4ade80" },
+  { id:2, title:"Gaming Transition Pack", desc:"50+ smooth transitions optimized for gaming montages. Zoom, whip, glitch, and slide transitions.", category:"transitions", size:"85 MB", downloads:"12.3K", icon:"fa-random", color:"#c084fc" },
+  { id:3, title:"Light Leak Overlays", desc:"Organic light leak overlays for cinematic footage. 4K resolution, drag and drop ready.", category:"overlays", size:"2.1 GB", downloads:"6.2K", icon:"fa-sun", color:"#f472b6" },
+  { id:4, title:"Sound Effects Library", desc:"200+ essential SFX for video editing. Whooshes, impacts, risers, and UI sounds.", category:"sfx", size:"450 MB", downloads:"15.1K", icon:"fa-volume-up", color:"#fbbf24" },
+  { id:5, title:"Motion Graphics Presets", desc:"After Effects motion graphics presets. Text animations, shape transitions, and logo reveals.", category:"presets", size:"180 MB", downloads:"4.8K", icon:"fa-magic", color:"#a78bfa" },
+  { id:6, title:"Editor Font Collection", desc:"20+ fonts perfect for video titles and thumbnails. Bold, modern, and readable fonts.", category:"fonts", size:"45 MB", downloads:"9.7K", icon:"fa-font", color:"#60a5fa" },
+  { id:7, title:"YouTube Intro Template", desc:"Fully customizable YouTube intro template. Change colors, text, and logo easily.", category:"projects", size:"320 MB", downloads:"3.4K", icon:"fa-file-video", color:"#9ca3af" },
+  { id:8, title:"Glitch Effect Pack", desc:"Cyberpunk glitch effects and overlays. RGB split, scan lines, and digital distortion.", category:"overlays", size:"95 MB", downloads:"7.9K", icon:"fa-bolt", color:"#f472b6" }
+];
+
+const issuesData = [
+  { id:1, title:"Premiere Pro Lag & Stuttering", desc:"Fix timeline lag, playback stuttering, and slow scrubbing in Premiere Pro.", category:"lag", icon:"fa-tachometer-alt", solutions:"<h3>1. Lower Playback Resolution</h3><p>Change playback resolution to 1/4 or 1/8 from the Program Monitor settings.</p><div class='tip-box'><strong>Tip:</strong> Press <code>Ctrl+0</code> to quickly access monitor settings.</div><h3>2. Clear Media Cache</h3><p>Go to <code>Edit > Preferences > Media Cache</code> and click 'Delete' to clear unused cache files.</p><h3>3. Enable GPU Acceleration</h3><p>Go to <code>File > Project Settings > General</code> and set Renderer to Mercury Playback Engine GPU Acceleration.</p><h3>4. Close Unused Programs</h3><p>Free up RAM by closing Chrome, Discord, and other background apps while editing.</p>" },
+  { id:2, title:"After Effects Keeps Crashing", desc:"Solutions for frequent crashes, freeze frames, and unexpected shutdowns.", category:"crash", icon:"fa-exclamation-triangle", solutions:"<h3>1. Update Graphics Drivers</h3><p>Ensure your NVIDIA/AMD drivers are up to date. Outdated drivers are the #1 cause of AE crashes.</p><h3>2. Increase Memory Allocation</h3><p>Go to <code>Edit > Preferences > Memory</code> and allocate more RAM to After Effects.</p><h3>3. Purge Cache</h3><p>Press <code>Edit > Purge > All Memory & Disk Cache</code> to clear corrupted cache.</p><h3>4. Disable Hardware Acceleration</h3><p>Try disabling GPU acceleration if crashes persist: <code>Edit > Preferences > Display</code>.</p>" },
+  { id:3, title:"Slow Rendering & Export Times", desc:"Speed up your renders with these optimization techniques.", category:"render", icon:"fa-hourglass-half", solutions:"<h3>1. Use Media Encoder</h3><p>Export through Adobe Media Encoder instead of direct export. It allows background rendering.</p><h3>2. Render at Lower Bitrate</h3><p>For drafts, use H.264 at 8-12 Mbps. For final delivery, use 16-20 Mbps.</p><h3>3. Enable Render Multiple Frames</h3><p>In After Effects, enable <code>Preferences > Memory > Render Multiple Frames Simultaneously</code>.</p><h3>4. Use SSD for Cache</h3><p>Set your media cache and preview files to an SSD drive for faster read/write speeds.</p>" },
+  { id:4, title:"Low FPS During Gameplay Recording", desc:"Fix frame drops while recording gameplay with OBS or other software.", category:"fps", icon:"fa-gamepad", solutions:"<h3>1. Lower Recording Settings</h3><p>Record at 1080p60 instead of 4K. Use NVENC or AMF encoder for GPU-based recording.</p><h3>2. Cap In-Game FPS</h3><p>Cap your game FPS to 120 or 144 to free up GPU resources for the recorder.</p><h3>3. Run as Administrator</h3><p>Run OBS as administrator to give it higher process priority.</p><h3>4. Disable Game Mode</h3><p>Windows Game Mode can interfere with recording. Disable it in Windows Settings.</p>" },
+  { id:5, title:"Audio Out of Sync", desc:"Fix audio sync issues in your timeline and exported videos.", category:"audio", icon:"fa-volume-mute", solutions:"<h3>1. Check Sample Rate</h3><p>Ensure your project sample rate matches your footage (usually 48kHz for video).</p><h3>2. Use Timecode Sync</h3><p>If using external audio, sync by timecode or use the clap method for manual sync.</p><h3>3. Render Audio Before Export</h3><p>In Premiere, go to <code>Sequence > Render In to Out</code> to pre-render audio.</p><h3>4. Check VBR Settings</h3><p>When exporting, use CBR (Constant Bitrate) instead of VBR to prevent audio drift.</p>" },
+  { id:6, title:"DaVinci Resolve Won't Open", desc:"Fix startup crashes and black screen issues in DaVinci Resolve.", category:"crash", icon:"fa-desktop", solutions:"<h3>1. Update to Latest Version</h3><p>Download the latest DaVinci Resolve from Blackmagic Design website.</p><h3>2. Delete Preferences</h3><p>Delete the preferences folder: <code>C:\\Users\\[User]\\AppData\\Roaming\\Blackmagic Design</code></p><h3>3. Disable Integrated GPU</h3><p>If you have dual GPUs, disable the integrated one in BIOS or Device Manager.</p><h3>4. Run in Compatibility Mode</h3><p>Right-click Resolve.exe > Properties > Compatibility > Run as Windows 8.</p>" }
+];
+
+const communityData = [
+  { id:1, user:"Alex Cuts", avatar:"A", time:"2h ago", content:"Just finished my first anime edit! Used the shake effects from the tutorial. What do you think?", likes:45, comments:12, image:"https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&h=340&fit=crop" },
+  { id:2, user:"GamerEditz", avatar:"G", time:"5h ago", content:"New Valorant montage dropping tomorrow! Here is a sneak peek of the transitions.", likes:128, comments:34, image:"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=340&fit=crop" },
+  { id:3, user:"Sarah Cuts", avatar:"S", time:"8h ago", content:"Looking for feedback on my color grading. Does the teal/orange look too heavy?", likes:67, comments:23, image:"https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=340&fit=crop" },
+  { id:4, user:"MotionMaster", avatar:"M", time:"1d ago", content:"Created a free motion graphics pack for the community! Link in comments.", likes:234, comments:56, image:"https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=340&fit=crop" }
+];
+
+const creatorsData = [
+  { id:1, name:"Alex Cuts", handle:"@alexcuts", subs:"245K", specialty:"Gaming Montages", avatar:"A", color:"linear-gradient(135deg,#7c3aed,#a855f7)" },
+  { id:2, name:"Sarah Edits", handle:"@sarahedits", subs:"189K", specialty:"Anime Edits", avatar:"S", color:"linear-gradient(135deg,#ec4899,#f472b6)" },
+  { id:3, name:"CinemaFlow", handle:"@cinemaflow", subs:"512K", specialty:"Color Grading", avatar:"C", color:"linear-gradient(135deg,#22c55e,#4ade80)" },
+  { id:4, name:"SoundWave", handle:"@soundwave", subs:"98K", specialty:"Sound Design", avatar:"S", color:"linear-gradient(135deg,#3b82f6,#60a5fa)" }
+];
+
+// ===================== STATE =====================
+let currentPage = 'home';
+let isLoggedIn = false;
+let currentUser = null;
+let savedItems = [];
+let currentAIMode = 'mentor';
+let currentDownloadItem = null;
+
+// ===================== NAVIGATION =====================
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if(target) {
+    target.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const navLink = document.querySelector('.nav-link[data-page="' + page + '"]');
+  if(navLink) navLink.classList.add('active');
+
+  document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+  const mobileItems = document.querySelectorAll('.mobile-nav-item');
+  const pageMap = {home:0, tutorials:1, 'ai-assistant':2, resources:3, community:4};
+  if(mobileItems[pageMap[page]]) mobileItems[pageMap[page]].classList.add('active');
+
+  currentPage = page;
+
+  if(page === 'tutorials') renderTutorials('all');
+  if(page === 'resources') renderResources('all');
+  if(page === 'troubleshoot') renderIssues('all');
+  if(page === 'community') renderCommunity();
+  if(page === 'creators') renderCreators();
+  if(page === 'profile') renderProfileActivity();
+}
+
+function goHome() { showPage('home'); }
+
+// ===================== RENDER FUNCTIONS =====================
+function renderTutorials(filter) {
+  const grid = document.getElementById('tutorialsGrid');
+  if(!grid) return;
+
+  let filtered = filter === 'all' ? tutorialsData : tutorialsData.filter(t => t.category === filter);
+
+  grid.innerHTML = filtered.map(t => `
+    <div class="card" onclick="openTutorial(${t.id})">
+      <img src="${t.image}" alt="${t.title}" class="card-image" loading="lazy" onerror="this.src='https://via.placeholder.com/600x340/1a1a25/6b6b7b?text=Video+Tutorial'">
+      <div class="card-body">
+        <span class="card-tag tag-${t.category}">${t.category.toUpperCase()}</span>
+        <span class="card-tag tag-${t.level}">${t.level.toUpperCase()}</span>
+        <div class="card-title">${t.title}</div>
+        <div class="card-desc">${t.desc}</div>
+        <div class="card-meta">
+          <span><i class="fas fa-clock"></i> ${t.duration}</span>
+          <span><i class="fas fa-eye"></i> ${t.views}</span>
+          <span style="margin-left:auto;cursor:pointer;" onclick="event.stopPropagation();toggleSave(${t.id},'tutorial')">
+            <i class="far fa-bookmark" id="save-tut-${t.id}"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderResources(filter) {
+  const grid = document.getElementById('resourcesGrid');
+  if(!grid) return;
+
+  let filtered = filter === 'all' ? resourcesData : resourcesData.filter(r => r.category === filter);
+
+  grid.innerHTML = filtered.map(r => {
+    const rgb = hexToRgb(r.color);
+    return `
+    <div class="card resource-card">
+      <div class="resource-icon" style="background:rgba(${rgb},0.15);color:${r.color};">
+        <i class="fas ${r.icon}"></i>
+      </div>
+      <div class="resource-info">
+        <span class="card-tag tag-${r.category}">${r.category.toUpperCase()}</span>
+        <div class="resource-title">${r.title}</div>
+        <div class="resource-desc">${r.desc}</div>
+        <div class="card-meta" style="margin-bottom:10px;">
+          <span><i class="fas fa-hdd"></i> ${r.size}</span>
+          <span><i class="fas fa-download"></i> ${r.downloads}</span>
+        </div>
+        <div class="resource-actions">
+          <button class="btn btn-primary btn-sm" onclick="startDownload(${r.id})">
+            <i class="fas fa-download"></i> Download
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="toggleSave(${r.id},'resource')">
+            <i class="far fa-bookmark" id="save-res-${r.id}"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `}).join('');
+}
+
+function renderIssues(filter) {
+  const grid = document.getElementById('issuesGrid');
+  if(!grid) return;
+
+  let filtered = filter === 'all' ? issuesData : issuesData.filter(i => i.category === filter);
+
+  grid.innerHTML = filtered.map(i => `
+    <div class="card issue-card" onclick="openIssue(${i.id})">
+      <div class="issue-icon"><i class="fas ${i.icon}"></i></div>
+      <div class="issue-content">
+        <div class="issue-title">${i.title}</div>
+        <div class="issue-desc">${i.desc}</div>
+      </div>
+      <div class="issue-arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+  `).join('');
+}
+
+function renderCommunity() {
+  const grid = document.getElementById('communityGrid');
+  if(!grid) return;
+
+  grid.innerHTML = communityData.map(c => `
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div class="user-avatar" style="width:40px;height:40px;font-size:14px;background:var(--gradient-1);">${c.avatar}</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;">${c.user}</div>
+          <div style="font-size:12px;color:var(--text-muted);">${c.time}</div>
+        </div>
+      </div>
+      <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px;">${c.content}</p>
+      ${c.image ? `<img src="${c.image}" style="width:100%;border-radius:12px;margin-bottom:12px;" loading="lazy" onerror="this.style.display='none'">` : ''}
+      <div style="display:flex;gap:16px;font-size:13px;color:var(--text-muted);">
+        <span style="cursor:pointer;" onclick="showToast('Liked!','success')"><i class="far fa-heart"></i> ${c.likes}</span>
+        <span style="cursor:pointer;" onclick="showToast('Comment feature coming soon!','info')"><i class="far fa-comment"></i> ${c.comments}</span>
+        <span style="cursor:pointer;margin-left:auto;" onclick="showToast('Shared!','success')"><i class="far fa-share-square"></i></span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCreators() {
+  const grid = document.getElementById('creatorsGrid');
+  if(!grid) return;
+
+  grid.innerHTML = creatorsData.map(c => `
+    <div class="card" style="padding:24px;text-align:center;">
+      <div style="width:70px;height:70px;border-radius:50%;background:${c.color};display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 16px;">${c.avatar}</div>
+      <div style="font-size:18px;font-weight:700;">${c.name}</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">${c.handle}</div>
+      <div style="font-size:13px;color:var(--accent-light);margin-bottom:12px;">${c.specialty}</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:16px;">${c.subs} subscribers</div>
+      <button class="btn btn-primary btn-sm" onclick="showToast('Subscribed to ${c.name}!','success')">
+        <i class="fas fa-user-plus"></i> Follow
+      </button>
+    </div>
+  `).join('');
+}
+
+function renderProfileActivity() {
+  const grid = document.getElementById('profileActivity');
+  if(!grid) return;
+
+  grid.innerHTML = `
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;color:var(--accent-light);"><i class="fas fa-download"></i></div>
+        <div>
+          <div style="font-weight:600;font-size:14px;">Downloaded Cinematic LUT Pack</div>
+          <div style="font-size:12px;color:var(--text-muted);">2 hours ago</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;color:var(--success);"><i class="fas fa-check"></i></div>
+        <div>
+          <div style="font-weight:600;font-size:14px;">Completed Gaming Transitions Tutorial</div>
+          <div style="font-size:12px;color:var(--text-muted);">Yesterday</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;color:var(--warning);"><i class="fas fa-star"></i></div>
+        <div>
+          <div style="font-weight:600;font-size:14px;">Rated Color Grading Tutorial 5 stars</div>
+          <div style="font-size:12px;color:var(--text-muted);">3 days ago</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderFeatured() {
+  const ft = document.getElementById('featuredTutorials');
+  if(ft) ft.innerHTML = tutorialsData.slice(0,4).map(t => `
+    <div class="card" onclick="showPage('tutorials')">
+      <img src="${t.image}" alt="${t.title}" class="card-image" loading="lazy" onerror="this.src='https://via.placeholder.com/600x340/1a1a25/6b6b7b?text=Video+Tutorial'">
+      <div class="card-body">
+        <span class="card-tag tag-${t.category}">${t.category.toUpperCase()}</span>
+        <div class="card-title">${t.title}</div>
+        <div class="card-desc">${t.desc}</div>
+        <div class="card-meta">
+          <span><i class="fas fa-clock"></i> ${t.duration}</span>
+          <span><i class="fas fa-eye"></i> ${t.views}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const fr = document.getElementById('featuredResources');
+  if(fr) fr.innerHTML = resourcesData.slice(0,4).map(r => {
+    const rgb = hexToRgb(r.color);
+    return `
+    <div class="card resource-card" onclick="showPage('resources')">
+      <div class="resource-icon" style="background:rgba(${rgb},0.15);color:${r.color};">
+        <i class="fas ${r.icon}"></i>
+      </div>
+      <div class="resource-info">
+        <span class="card-tag tag-${r.category}">${r.category.toUpperCase()}</span>
+        <div class="resource-title">${r.title}</div>
+        <div class="resource-desc">${r.desc}</div>
+        <div class="card-meta">
+          <span><i class="fas fa-hdd"></i> ${r.size}</span>
+          <span><i class="fas fa-download"></i> ${r.downloads}</span>
+        </div>
+      </div>
+    </div>
+  `}).join('');
+
+  const fi = document.getElementById('featuredIssues');
+  if(fi) fi.innerHTML = issuesData.slice(0,4).map(i => `
+    <div class="card issue-card" onclick="showPage('troubleshoot')">
+      <div class="issue-icon"><i class="fas ${i.icon}"></i></div>
+      <div class="issue-content">
+        <div class="issue-title">${i.title}</div>
+        <div class="issue-desc">${i.desc}</div>
+      </div>
+      <div class="issue-arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+  `).join('');
+}
+
+// ===================== FILTER FUNCTIONS =====================
+function filterTutorials(category) {
+  document.querySelectorAll('#tutorialFilters .pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTutorials(category);
+}
+
+function filterResources(category) {
+  document.querySelectorAll('#resourceFilters .pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  renderResources(category);
+}
+
+function filterIssues(category) {
+  document.querySelectorAll('#page-troubleshoot .pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  renderIssues(category);
+}
+
+// ===================== AI CHAT =====================
+function setAIMode(mode) {
+  currentAIMode = mode;
+  document.querySelectorAll('.ai-mode').forEach(m => m.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const modeNames = {mentor:'Mentor',ideas:'Idea Generator',optimizer:'PC Optimizer',color:'Color Advisor',export:'Export Guide',script:'Script Writer'};
+  addBotMessage('Switched to ' + modeNames[mode] + ' mode. How can I help you?');
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if(!msg) return;
+
+  addUserMessage(msg);
+  input.value = '';
+
+  setTimeout(() => {
+    const response = generateAIResponse(msg, currentAIMode);
+    addBotMessage(response);
+  }, 800);
+}
+
+function quickAsk(question) {
+  document.getElementById('chatInput').value = question;
+  sendMessage();
+}
+
+function addUserMessage(text) {
+  const container = document.getElementById('chatMessages');
+  container.innerHTML += '<div class="message message-user"><div>' + escapeHtml(text) + '</div><div class="message-time">Just now</div></div>';
+  container.scrollTop = container.scrollHeight;
+}
+
+function addBotMessage(text) {
+  const container = document.getElementById('chatMessages');
+  container.innerHTML += '<div class="message message-bot"><div>' + text + '</div><div class="message-time">Just now</div></div>';
+  container.scrollTop = container.scrollHeight;
+}
+
+function generateAIResponse(msg, mode) {
+  msg = msg.toLowerCase();
+
+  if(mode === 'ideas') {
+    if(msg.includes('gaming')) return "Gaming Content Ideas:<br>1. 'Every Kill in Slow Motion' montage<br>2. 'Clutch Moments' compilation<br>3. Character ability showcase with sync<br>4. 'Road to Ranked' progression series<br>5. Funny moments with meme edits";
+    if(msg.includes('anime')) return "Anime Edit Ideas:<br>1. Character arc transformation edit<br>2. AMV with emotional storyline<br>3. Fight scene sync to phonk music<br>4. 'Best Moments' compilation<br>5. Character aesthetic edit with VHS effects";
+    if(msg.includes('tiktok') || msg.includes('short')) return "Short-Form Ideas:<br>1. '3 Editing Tricks in 60 Seconds'<br>2. Before/After color grading reveal<br>3. Trending sound lip sync<br>4. Quick tutorial snippet<br>5. Transition showcase with popular audio";
+    return "Content Ideas:<br>1. Behind-the-scenes editing process<br>2. 'How I made this edit' breakdown<br>3. Software comparison video<br>4. Speed editing challenge<br>5. Collaboration with another editor";
+  }
+
+  if(mode === 'optimizer') {
+    if(msg.includes('lag') || msg.includes('slow')) return "PC Optimization Tips:<br>1. Close Chrome tabs (each uses 50-100MB RAM)<br>2. Set editing software to High Priority in Task Manager<br>3. Disable Windows visual effects<br>4. Use an SSD for cache and project files<br>5. Upgrade to 32GB RAM if possible";
+    if(msg.includes('render')) return "Render Optimization:<br>1. Use proxy media for 4K footage<br>2. Render in segments instead of full timeline<br>3. Lower preview quality during edit<br>4. Use hardware encoding (NVENC/QuickSync)<br>5. Close all background applications";
+    return "PC Optimization:<br>1. Update GPU drivers monthly<br>2. Clean temp files weekly<br>3. Defrag HDD (not SSD)<br>4. Disable startup programs<br>5. Keep 20% free space on C: drive";
+  }
+
+  if(mode === 'color') {
+    if(msg.includes('cinematic')) return "Cinematic Color Tips:<br>1. Use teal/orange split - shadows teal, highlights orange<br>2. Crush blacks slightly for film look<br>3. Add subtle film grain overlay<br>4. Use S-curve for contrast<br>5. Desaturate greens and magentas slightly";
+    if(msg.includes('lut')) return "LUT Usage Guide:<br>1. Apply LUT at 50-70% intensity for subtle look<br>2. Use LUTs as starting point, not final look<br>3. Create your own LUTs from favorite grades<br>4. Match LUT to your camera profile (Log, Rec.709)<br>5. Always color correct before applying LUTs";
+    return "Color Grading Tips:<br>1. White balance first, grade second<br>2. Use scopes (Waveform, Vectorscope)<br>3. Skin tones should sit on skin line<br>4. Match shots before creative grading<br>5. Less is more - subtle grades look pro";
+  }
+
+  if(mode === 'export') {
+    if(msg.includes('youtube')) return "YouTube Export Settings:<br>Format: H.264<br>Resolution: 1920x1080 (1080p) or 3840x2160 (4K)<br>Bitrate: 8-12 Mbps (1080p), 35-45 Mbps (4K)<br>Frame Rate: Match source (24/30/60fps)<br>Audio: AAC, 320kbps, 48kHz";
+    if(msg.includes('tiktok') || msg.includes('short')) return "TikTok/Reels Export:<br>Format: H.264<br>Resolution: 1080x1920 (9:16)<br>Bitrate: 6-8 Mbps<br>Frame Rate: 30fps or 60fps<br>Duration: Under 60 seconds for best performance";
+    return "Export Best Practices:<br>1. Always export from timeline, not preview<br>2. Use VBR 2-pass for better quality<br>3. Match frame rate to your project<br>4. Export audio separately for critical projects<br>5. Test upload on private first";
+  }
+
+  if(mode === 'script') {
+    return "Video Script Template:<br><br><strong>Hook (0-5s):</strong> Grab attention immediately<br><strong>Intro (5-15s):</strong> What they will learn<br><strong>Body:</strong> 3-5 key points with examples<br><strong>CTA (last 10s):</strong> Like, subscribe, comment<br><br>Keep sentences short and punchy. Use 'you' language.";
+  }
+
+  // Default mentor mode
+  if(msg.includes('transition')) return "For smooth transitions:<br>1. Match motion between clips (motion blur helps)<br>2. Use sound design to bridge cuts<br>3. Time transitions to music beats<br>4. Keep transitions under 0.5 seconds<br>5. Use velocity curves for natural feel<br><br>Popular types: Zoom, Whip, Mask, Light Leak, Glitch";
+  if(msg.includes('premiere') && msg.includes('lag')) return "Fix Premiere Pro lag:<br>1. Lower playback resolution to 1/4<br>2. Clear media cache: Edit > Preferences > Media Cache<br>3. Enable GPU acceleration in Project Settings<br>4. Create proxies for 4K footage<br>5. Close Chrome/Discord while editing";
+  if(msg.includes('after effects') && msg.includes('crash')) return "Fix AE crashes:<br>1. Update GPU drivers (NVIDIA/AMD)<br>2. Increase memory allocation in Preferences<br>3. Purge cache: Edit > Purge > All Memory<br>4. Disable hardware acceleration if needed<br>5. Update to latest AE version";
+  if(msg.includes('beginner')) return "Best software for beginners:<br><br><strong>Free:</strong> DaVinci Resolve (most powerful free option)<br><strong>Mobile:</strong> CapCut, InShot<br><strong>Paid:</strong> Adobe Premiere Pro (industry standard)<br><br>Start with DaVinci Resolve - it is free and professional-grade.";
+  if(msg.includes('free')) return "Free editing resources:<br>1. DaVinci Resolve (editing + color + audio)<br>2. Blender (3D motion graphics)<br>3. Audacity (audio editing)<br>4. OBS Studio (screen recording)<br>5. Canva (thumbnails and graphics)<br><br>All available on our Resources page!";
+
+  return "Great question! Here is what I recommend:<br><br>1. Start with the basics - understand your software interface<br>2. Practice with simple projects first<br>3. Watch tutorials for specific techniques<br>4. Join our community for feedback<br>5. Keep experimenting and creating!<br><br>Would you like more specific advice on any topic?";
+}
+
+// ===================== MODALS =====================
+function openSearch() {
+  document.getElementById('searchModal').classList.add('active');
+  setTimeout(() => document.getElementById('searchInput').focus(), 100);
+}
+
+function closeSearch() {
+  document.getElementById('searchModal').classList.remove('active');
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').innerHTML = '';
+}
+
+function performSearch(query) {
+  const results = document.getElementById('searchResults');
+  if(!query.trim()) { results.innerHTML = ''; return; }
+
+  const q = query.toLowerCase();
+  const allItems = [
+    ...tutorialsData.map(t => ({...t, type:'tutorial', icon:'fa-play-circle'})),
+    ...resourcesData.map(r => ({...r, type:'resource', icon:'fa-download'})),
+    ...issuesData.map(i => ({...i, type:'issue', icon:i.icon}))
+  ];
+
+  const filtered = allItems.filter(item => 
+    item.title.toLowerCase().includes(q) || 
+    item.desc.toLowerCase().includes(q) ||
+    (item.category && item.category.toLowerCase().includes(q))
+  ).slice(0,6);
+
+  results.innerHTML = filtered.map(item => `
+    <div class="search-result-item" onclick="handleSearchResult('${item.type}',${item.id})">
+      <div class="search-result-icon"><i class="fas ${item.icon}"></i></div>
+      <div class="search-result-info">
+        <div class="search-result-title">${item.title}</div>
+        <div class="search-result-desc">${item.type.charAt(0).toUpperCase() + item.type.slice(1)} - ${item.category || 'General'}</div>
+      </div>
+    </div>
+  `).join('') || '<div style="padding:20px;text-align:center;color:var(--text-muted);">No results found</div>';
+}
+
+function handleSearchResult(type, id) {
+  closeSearch();
+  if(type === 'tutorial') { showPage('tutorials'); openTutorial(id); }
+  else if(type === 'resource') { showPage('resources'); startDownload(id); }
+  else if(type === 'issue') { showPage('troubleshoot'); openIssue(id); }
+}
+
+function openAuth() {
+  document.getElementById('authModal').classList.add('active');
+}
+
+function closeAuth() {
+  document.getElementById('authModal').classList.remove('active');
+}
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('authTitle').textContent = tab === 'login' ? 'Welcome Back' : 'Create Account';
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  if(!email || !password) {
+    showToast('Please fill in all fields','error');
+    return;
+  }
+
+  isLoggedIn = true;
+  currentUser = {name:'Ahmed Editor', email:email};
+
+  document.getElementById('loginBtn').classList.add('hidden');
+  document.getElementById('userAvatar').classList.remove('hidden');
+
+  closeAuth();
+  showToast('Welcome back, Ahmed!','success');
+}
+
+function doRegister() {
+  showToast('Account created successfully!','success');
+  switchAuthTab('login');
+}
+
+function logout() {
+  isLoggedIn = false;
+  currentUser = null;
+  document.getElementById('loginBtn').classList.remove('hidden');
+  document.getElementById('userAvatar').classList.add('hidden');
+  showToast('Logged out successfully','info');
+}
+
+function toggleUserMenu() {
+  document.getElementById('userMenuOverlay').classList.toggle('active');
+}
+
+function closeUserMenu() {
+  document.getElementById('userMenuOverlay').classList.remove('active');
+}
+
+function openIssue(id) {
+  const issue = issuesData.find(i => i.id === id);
+  if(!issue) return;
+
+  document.getElementById('issueModalTitle').textContent = issue.title;
+  document.getElementById('issueModalBody').innerHTML = issue.solutions;
+  document.getElementById('issueModal').classList.add('active');
+}
+
+function closeIssueModal() {
+  document.getElementById('issueModal').classList.remove('active');
+}
+
+function openTutorial(id) {
+  const tutorial = tutorialsData.find(t => t.id === id);
+  if(!tutorial) return;
+  showToast('Playing: ' + tutorial.title,'info');
+}
+
+function startDownload(id) {
+  currentDownloadItem = id;
+  document.getElementById('downloadModal').classList.add('active');
+}
+
+function closeDownloadModal() {
+  document.getElementById('downloadModal').classList.remove('active');
+}
+
+function confirmDownload() {
+  closeDownloadModal();
+  const item = resourcesData.find(r => r.id === currentDownloadItem);
+  showToast(item ? 'Downloading: ' + item.title : 'Download started!','success');
+}
+
+function toggleSave(id, type) {
+  if(!isLoggedIn) {
+    showToast('Please sign in to save items','error');
+    openAuth();
+    return;
+  }
+
+  const icon = document.getElementById('save-' + (type === 'tutorial' ? 'tut' : 'res') + '-' + id);
+  if(icon) {
+    const isSaved = icon.classList.contains('fas');
+    icon.classList.toggle('fas');
+    icon.classList.toggle('far');
+    showToast(isSaved ? 'Removed from saved' : 'Saved!','success');
+  }
+}
+
+// ===================== TOAST =====================
+function showToast(message, type) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+
+  const icons = {success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};
+  toast.innerHTML = '<i class="fas ' + (icons[type] || 'fa-info-circle') + '" style="color:var(--' + type + ');"></i> ' + message;
+
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ===================== UTILS =====================
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return r + ',' + g + ',' + b;
+}
+
+// ===================== KEYBOARD SHORTCUTS =====================
+document.addEventListener('keydown', function(e) {
+  if(e.ctrlKey && e.key === 'k') {
+    e.preventDefault();
+    openSearch();
+  }
+  if(e.key === 'Escape') {
+    closeSearch();
+    closeAuth();
+    closeIssueModal();
+    closeDownloadModal();
+    closeUserMenu();
+  }
+});
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', function() {
+  renderFeatured();
+  renderTutorials('all');
+  renderResources('all');
+  renderIssues('all');
+  renderCommunity();
+  renderCreators();
+  renderProfileActivity();
+});
+</script>
+</body>
+</html>
